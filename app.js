@@ -4,6 +4,13 @@
 
 let currentView = 'watchlist';
 
+// Image errors do not bubble; capture them for dynamically rendered quick links.
+document.addEventListener('error', (event) => {
+  const img = event.target;
+  if (img.matches?.('.quicklink-settings-favicon img, .quicklink-favicon img')) {
+    img.remove();
+  }
+}, true);
 
 /* Theme-aware SVG icon inliner: external SVG <img> files cannot inherit the
    surrounding button text color, so local icon SVGs are inlined and colored
@@ -1051,7 +1058,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   function quickLinkIcon(link) {
     const href = link.url || link.animeUrl || link.mangaUrl || '';
-    return `<span class="quicklink-settings-favicon"><img src="https://www.google.com/s2/favicons?sz=32&domain_url=${encodeURIComponent(href)}" loading="lazy" onerror="this.remove()"></span>`;
+    return `<span class="quicklink-settings-favicon"><img src="https://www.google.com/s2/favicons?sz=32&domain_url=${encodeURIComponent(href)}" loading="lazy"></span>`;
   }
 
   function getEnabledQuickLinks() {

@@ -23,7 +23,7 @@ const DetailUI = {
       const template = l.url || l.animeUrl || l.mangaUrl || '';
       const href = this._quickLinkUrl(template, title);
       if (!href) return '';
-      return `<a class="quicklink-chip" href="${esc(href)}" target="_blank" rel="noopener noreferrer" title="${esc(l.name)}"><span class="quicklink-favicon"><img src="https://www.google.com/s2/favicons?sz=32&domain_url=${encodeURIComponent(href)}" loading="lazy" onerror="this.remove()"></span>${esc(l.name)}</a>`;
+      return `<a class="quicklink-chip" href="${esc(href)}" target="_blank" rel="noopener noreferrer" title="${esc(l.name)}"><span class="quicklink-favicon"><img src="https://www.google.com/s2/favicons?sz=32&domain_url=${encodeURIComponent(href)}" loading="lazy"></span>${esc(l.name)}</a>`;
     }).join('');
     if (!row) return '';
     return `<div class="detail-section quicklinks-detail-section"><h3>Quick Links</h3><div class="quicklinks-detail-list"><div class="quicklink-chip-row">${row}</div></div></div>`;
@@ -153,12 +153,15 @@ const DetailUI = {
           return;
         } else {
           page.innerHTML = `
-            <button class="btn-back" onclick="App.showPage(currentView||'watchlist')">Back</button>
+            <button class="btn-back" data-action="return-to-list">Back</button>
             <div style="padding:40px;color:var(--dropped)">
               <h3 style="margin-bottom:8px;">Failed to load: ${e.message}</h3>
               <p style="color:var(--text-2);font-size:13px;">This entry may have been incorrectly matched or removed.</p>
-              <button class="btn-accent" style="margin-top:16px;" onclick="App.showPage(currentView||'watchlist')">Return to List</button>
+              <button class="btn-accent" style="margin-top:16px;" data-action="return-to-list">Return to List</button>
             </div>`;
+          page.querySelectorAll('[data-action="return-to-list"]').forEach(button => {
+            button.addEventListener('click', () => App.showPage(currentView || 'watchlist'));
+          });
           return;
         }
       }

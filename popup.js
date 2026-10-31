@@ -1189,13 +1189,18 @@ function renderPopupQuickLinks(title) {
     const href = buildQuickLinkUrl(template, title);
     if (!href) return '';
     return `<a class="pd-quicklink-chip" href="${esc(href)}" target="_blank" rel="noopener noreferrer" title="${esc(l.name)}">
-      <span class="pd-quicklink-favicon"><img src="https://www.google.com/s2/favicons?sz=32&domain_url=${encodeURIComponent(href)}" loading="lazy" onerror="this.remove()"></span>${esc(l.name)}</a>`;
+      <span class="pd-quicklink-favicon"><img src="https://www.google.com/s2/favicons?sz=32&domain_url=${encodeURIComponent(href)}" loading="lazy"></span>${esc(l.name)}</a>`;
   }).join('');
   if (!row) return '';
   return `<div class="pd-section pd-quicklinks"><div class="pd-section-label">Quick Links</div><div class="pd-quicklinks-list"><div class="pd-quicklink-chip-row">${row}</div></div></div>`;
 }
 
 function bindPopupQuickLinks(root) {
+  root.querySelectorAll('.pd-quicklink-favicon img').forEach(img => {
+    img.addEventListener('error', () => img.remove(), { once: true });
+    // A cached failure may have completed before the listener was attached.
+    if (img.complete && img.naturalWidth === 0) img.remove();
+  });
   root.querySelectorAll('.pd-quicklink-chip').forEach(a => {
     a.addEventListener('click', (e) => {
       e.preventDefault();
